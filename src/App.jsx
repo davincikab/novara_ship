@@ -844,12 +844,12 @@ const RowExpansionTemplate = ({data, annotationsLinks}) => {
 
   const getOverviewSection = () => {
     let item = annotationsLinks.find(link => link.acf.ids.includes(`.${data.id}`));
-    console.log(data, item);
+    console.log(item);
 
     return (
       <div className='w-full'>
           {data.content.raw}
-        <iframe src={!item ? "https://globalsearoutes.net/collections/a3073/" : item.url_iframe} className="min-h-[80vh] h-full w-full"></iframe>
+        <iframe src={!item ? "https://globalsearoutes.net/collections/a3073/" : item.acf.url_iframe} className="min-h-[80vh] h-full w-full"></iframe>
       </div>
     )
   }
