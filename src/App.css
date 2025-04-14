@@ -168,7 +168,7 @@ h5 {
 
   /* Auto layout */
   display: flex;
-  flex-direction: row;
+  /* flex-direction: row; */
   justify-content: center;
   align-items: center;
   padding: 0px 30px 24px;
@@ -176,8 +176,8 @@ h5 {
   isolation: isolate;
 
   position: absolute;
-  width: 488px;
-  max-height: 763px;
+  max-width: 600px;
+  max-height: 90vh;
   /* height: 763px; */
   /* left: 944px;
   top: 140px; */

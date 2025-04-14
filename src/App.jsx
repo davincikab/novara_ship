@@ -20,6 +20,7 @@ import { InputText } from 'primereact/inputtext';
 import { Slider } from 'primereact/slider';
 import { useDrag } from './useDrag';
 import Icons from './Icons';
+import { ResizableBox } from 'react-resizable';
 
 const part0 = 99; //  vele_alberi_corde
 const part1 = 248; //  piano1 1050, 1115, 315
@@ -95,37 +96,37 @@ function App() {
 
       // console.log(api);
 
-      api.addEventListener("viewerready", function () {
+      window.apiClient.addEventListener("viewerready", () => {
         console.log("View Ready");
         // document.getElementById("panel").classList.remove("hidden");
-        api.getSceneGraph(function (err, result) {
+        window.apiClient.getSceneGraph((err, result) => {
           if (err) {
             console.log("Error getting nodes");
             return;
           } // get the id from that log
           //console.log(result);
-          api.load(function () {
+          window.apiClient.load( () => {
             window.console.log("Viewer loaded");
             playSound();
           });
     
           // Eventi per le animazioni
-          api.addEventListener("animationEnded", () => {
+          window.apiClient.addEventListener("animationEnded", () => {
             window.console.log("Animation ended");
             // riabilitaButton();
           });
     
-          api.addEventListener("animationPlay", () => {
+          window.apiClient.addEventListener("animationPlay", () => {
             window.console.log("Animation play");
             // disabilitaButton();
           });
     
     
           //PATCH che nasconde refusi del modello
-          api.hide(13561); //lampada nell'lowerHold
+          window.apiClient.hide(13561); //lampada nell'lowerHold
     
           // EVENTI PER LE ANNOTAZIONI
-          api.getAnnotationList(function (err, annotations) {
+          window.apiClient.getAnnotationList(function (err, annotations) {
             if (!err) {
 
               setState((prevState) => ({
@@ -138,25 +139,24 @@ function App() {
             }
           });
     
-          api.addEventListener("annotationSelect", function (info) {
+          window.apiClient.addEventListener("annotationSelect", function (info) {
             console.log('annotationSelect', info);
             if (info === -1) {
               return;
             }
+
+            focusToAnnotation(info);
             // console.log('annotationSelect', info);
            
             //playSound();
             //console.log(annotationsList[info].name + (annotationsList[info].content ? annotationsList[info].content.rendered : ''));
           });
     
-          api.addEventListener("annotationFocus", function (info) {
-            console.log('annotationFocus', info);
-
-            console.log(state.annotations[info]);
-            setExpandedRows(state.annotations[info]);
+          window.apiClient.addEventListener("annotationFocus", (info) => {
+            
           });
     
-          api.addEventListener("annotationBlur", function (info) {
+          window.apiClient.addEventListener("annotationBlur", function (info) {
             //console.log('annotationBlur', info, annotationsList[info]);
           });
         });
@@ -167,6 +167,13 @@ function App() {
   const onerror = () => {
     console.error("Sketchfab API error");
   };
+
+  const focusToAnnotation = (index) => {
+    console.log('Active Deck:', window.activeDeck);
+
+    console.log(window.annotations.find(item => item.id == index));
+    setExpandedRows({[index]:true});
+  }
 
   const onClick = (e) => {
     let { id } = e.target;
@@ -200,6 +207,9 @@ function App() {
       // return;
      
       window.apiClient.setCameraLookAt(cam.eye, cam.target);
+      window.annotations = [...annotations.map((entry, i) => ({...entry, id:i+1}))];
+      window.activeDeck = id;
+
       setState(prevState => ({...prevState, annotations:[...annotations.map((entry, i) => ({...entry, id:i+1}))], annotationCount:0}));
       setSelectedAnnotation(null)
       setActiveDeck(id);
@@ -443,6 +453,7 @@ function App() {
 
   const modelUid = "03264464875242bda7e9c07da6921df8";
   console.log(expandedRows);
+  console.log(state);
   // console.log(lockedAnnotations);
   return (
       <div className='w-full h-full p-[20px] px-[40px] !bg-[#e7e7e7] main-section'>
@@ -451,7 +462,7 @@ function App() {
               <img src="/logo.png" alt="Novara Vessel" className='w-[60px]' />
             </div>
 
-            <div className="flex gap-x-[12px] text-[#403F43] mx-auto">
+            <div className="flex gap-x-[12px] text-[#403F43] mx-auto hidden">
 
               {
                 Object.keys(boatSections).map(sectionId => {
@@ -470,23 +481,47 @@ function App() {
                   )
                 })
               }
-              
-
             </div>
             
             {/* <hr /> */}
           </div>
 
-          <div className="main w-full h-[85%] mt-[40px] relative !bg-[transparent] overflow-hidden">
-            <div className="absolute top-[0px] left-0 bg-[bla] p-2 flex items-center z-[10]">
-              <Button onClick={resetViewer} className='!bg-[#f1f1f1] border-[0.5px] !border-[#CDCDDF] h-[40px] w-[40px] backrop-blur-[30px] !p-1 flex items-center justify-center rounded-full' rounded>
-                <RiArrowLeftSLine size={30} color=''/>
-              </Button>  
+          <div className="main w-full h-[85%] mt-[10px] relative !bg-[transparent] overflow-hidden">
+            <div className="w-full h-20 z-4 !bg-[#e7e7e7] absolute top-[0px] left-0 flex items-center">
 
-              <div className='flex flex-col !mx-4 title-section'>
-                <h5 className="font-bold text-[22px] text-[#403F43] my-0">Novara</h5>
-                <div className='text-[#5D6C71] text-[14px] my-0 capitalize'> { activeDeck ?boatSections[activeDeck].name : ""}</div> 
-              </div> 
+              <div className=" bg-[bla] p-2 flex items-center z-[10]">
+                <Button onClick={resetViewer} className='!bg-[#f1f1f1] border-[0.5px] !border-[#CDCDDF] h-[40px] w-[40px] backrop-blur-[30px] !p-1 flex items-center justify-center rounded-full' rounded>
+                  <RiArrowLeftSLine size={30} color=''/>
+                </Button>  
+
+                <div className='flex flex-col !mx-4 title-section'>
+                  <h5 className="font-bold text-[22px] text-[#403F43] my-0">Novara</h5>
+                  <div className='text-[#5D6C71] text-[14px] my-0 capitalize'> { activeDeck ?boatSections[activeDeck].name : ""}</div> 
+                </div> 
+              </div>
+
+              <div className="flex gap-x-[12px] text-[#403F43] mx-auto">
+
+                {
+                  Object.keys(boatSections).map(sectionId => {
+                    return (
+                      <Button 
+                        key={sectionId}
+                        onClick={onClick} 
+                        className={`nav-btn ${activeDeck == sectionId ? "!bg-[#403F43] !text-white active" : ""}`}
+                        // className={`min-w-[100px] !text-[16px] !text-[#000] !py-[1px] !px-[24px] !h-[48px] flex justify-evenly !border-[0.5px] !border-[#CDCDDF] !text-[#403F43] rounded-full ${activeDeck == sectionId ? "!bg-[#403F43] !text-white" : "!bg-[#e8e8e8]"}`} 
+                        id={sectionId} 
+                        rounded
+                      >
+                        <span className="mx-0 pointer-events-none scale-[0.8]">{getIcon(sectionId)}</span>
+                        <div>{boatSections[sectionId].name}</div>
+                    </Button>
+                    )
+                  })
+                }
+              </div>
+
+              <div className="bg-black/0 w-20 h-full"></div>
             </div>
 
             { (state.annotations.length && !showMedia) ? <Button onClick={toggleMediaSection} className='!absolute z-[10] top-[80px] left-2 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[48px] w-[48px] !p-1 !rounded-full' rounded>
@@ -521,34 +556,48 @@ function App() {
               </div>
             </div> : "" }
 
-            { (activeDeck && !state.isTableOpen ) ? <Button onClick={toggleTable} className='!absolute z-[10] top-[5px] right-4 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 !rounded-full' rounded>
+            { (activeDeck && !state.isTableOpen ) ? <Button onClick={toggleTable} className='!absolute z-[10] top-[15px] right-4 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 !rounded-full' rounded>
                 <RiArrowLeftDoubleLine color='#403F43' className='!font-bold' size={28} />
               </Button> : "" }
 
             { (activeDeck && state.isTableOpen ) && 
-            <Draggable nodeRef={draggableRef} >
+            <Draggable 
+              nodeRef={draggableRef} 
+              handle="strong" 
+              // bounds="body"
+            >
               {/* <div ref={draggableRef} className="draggable-box relative bg-black"> */}
                 
+             
               
               <div 
                 ref={draggableRef}
-                className="draggable-div !fixed z-[10] right-[20px] top-[120px]"
+                className="draggable-div !fixed z-[10] right-[20px] top-[80px]  flex flex-col border-[0px]"
                 // className="fixed z-[10] right-[50px] top-[145px] bg-[#e7e7e7]/60 backrop-blur-[2px] rounded-lg shadow-sm shadow-[#f1f1f1] w-[450px] h-[fit-content] text-black"
               > 
 
-                <div className="cursor-move absolute top-0 w-full h-[80px] bg-[inherit]"> 
-                </div>
+                <strong className="cursor cursor-move w-full h-[80px] bg-[transparent] handle" > 
+                </strong>
 
                 <Button 
                   onClick={toggleTable} 
-                  className="close-btn !absolute top-[20px] right-[20px] !p-0 flex items-center justify-center"
+                  className="close-btn !absolute top-[10px] right-[20px] !p-0 flex items-center justify-center"
                   // className='!absolute top-[20px] right-[20px] flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 rounded-full' rounded
                 >
                   <RiCloseLine color='#403F43' className='!font-bold text-2xl' size={28} />
                 </Button>
 
-                <div className="h-full overflow-hidden h-full w-full mt-[80px] rounded-[8px]">  
-                  <div className="list-group h-[80%] overflow-y-auto relative">
+                <ResizableBox 
+                  className="box bg-red-0 h-full w-full mt-[0px] no-cursor" 
+                  width={380}
+                  height={450}
+                  minConstraints={[350, 400]}
+                  maxConstraints={[540, 1000]}
+                  resizeHandles={["se", "sw"]}
+                >
+                <div className="h-full overflow-hidden h-full w-full mt-[0px] rounded-[8px]">  
+                
+                  <div className="list-group h-[fit-content] overflow-y-hidden relative bg-orange">
 
                       <DataTable 
                         value={state.annotations.filter(item => !lockedAnnotations.find(annotation => annotation.id == item.id))} 
@@ -565,9 +614,9 @@ function App() {
                         rowExpansionTemplate={rowExpansionTemplate}
                         dataKey="id" 
                         className='!bg-white'
-                        tableStyle={{ minWidth: '20rem', background:"white" }}
+                        tableStyle={{ minWidth: '20rem', background:"white", height:"50vh" }}
                         scrollable
-                        scrollHeight="300px"
+                        scrollHeight="50vh"
                         frozenValue={lockedAnnotations}
                         style={{ background:"white"}}
                       >
@@ -600,6 +649,9 @@ function App() {
 
                       </div> : ""}
                   </div>
+                  
+                
+
 
                   <div className="footer-section bg-white w-full !border-t-[1px] !border-[#CDCDDF]">
                       <div className="flex items-center gap-x-[12px]">
@@ -622,9 +674,11 @@ function App() {
                       </div>
                   </div>
                 </div>
-              {/* </div>   */}
+                </ResizableBox >
               
-              </div>
+              
+              </div> 
+              
             </Draggable> 
             }
 
