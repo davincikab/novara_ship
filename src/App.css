@@ -155,7 +155,7 @@ h5 {
 
 .main-section {
   position: relative;
-  max-width: 1440px;
+  /* max-width: 1440px; */
   margin:0 auto;
   /* 
   height: 899px; */

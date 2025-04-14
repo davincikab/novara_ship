@@ -49,6 +49,7 @@ const boatSections = {
 // const iLowerHold = new NovaraParts("lowerHold", part5, camLH);
 // const floors = [iSails, iMainDeck, iUpperDeck, iLowerDeck, iHold, iLowerHold];
 
+// 
 function App() {
   let api;
 
@@ -74,6 +75,7 @@ function App() {
   const [selectedAnnotation, setSelectedAnnotation] = useState(true);
   const [lockedAnnotations, setLockedAnnotations] = useState([]);
   const [showMedia, setShowMedia] = useState(false);
+  const [annotationsLinks, setAnnotationsLinks] = useState([]);
 
   const [state, setState] = useState({
     annotations:[],
@@ -85,9 +87,21 @@ function App() {
     isViewOptionExpanded:false
   })
 
-  const toggleModal = () => {
-
+  const getAnnotationsLinks = async() => {
+    try {
+      let response = await fetch("https://globalsearoutes.net/wp-json/wp/v2/annotazioni").then(res => res.json());
+      setAnnotationsLinks(response);
+    } catch(error) {
+      console.log(error);
+    }
   }
+
+  useEffect(() => {
+    if(!annotationsLinks.length) {
+      getAnnotationsLinks();
+    }
+  });
+
 
   const onsuccess = (apiClient) => {
       // console.log("Success");
@@ -172,7 +186,11 @@ function App() {
     console.log('Active Deck:', window.activeDeck);
 
     console.log(window.annotations.find(item => item.id == index));
-    setExpandedRows({[index]:true});
+    setExpandedRows({[parseInt(index)]:true});
+    setState({...state, isTableOpen:true});
+
+
+    setState(prevState => ({...prevState, annotations:[...annotations], annotationCount:window.annotations.lenght}));
   }
 
   const onClick = (e) => {
@@ -213,6 +231,7 @@ function App() {
       setState(prevState => ({...prevState, annotations:[...annotations.map((entry, i) => ({...entry, id:i+1}))], annotationCount:0}));
       setSelectedAnnotation(null)
       setActiveDeck(id);
+      setExpandedRows(null);
 
       removeAnnotations();
       createAnnotations(annotations);
@@ -433,8 +452,17 @@ function App() {
 
 
   const rowExpansionTemplate = (data) => {
-    // console.log(data);
-    return( <RowExpansionTemplate data={{...data}} />)
+    console.log(data);
+    console.log("Expansion Section");
+
+    if(!data) {
+      return;
+    }
+
+    return( <RowExpansionTemplate 
+      data={{...data}} 
+      annotationsLinks={annotationsLinks.filter(entry => entry.acf.ids.includes(`${boatSections[activeDeck].floor}.`))} 
+    />)
   }
 
   const allowExpansion = (rowData) => {
@@ -452,9 +480,7 @@ function App() {
   }
 
   const modelUid = "03264464875242bda7e9c07da6921df8";
-  console.log(expandedRows);
-  console.log(state);
-  // console.log(lockedAnnotations);
+
   return (
       <div className='w-full h-full p-[20px] px-[40px] !bg-[#e7e7e7] main-section'>
           <div className="navbar mb items-center flex ">
@@ -486,7 +512,7 @@ function App() {
             {/* <hr /> */}
           </div>
 
-          <div className="main w-full h-[85%] mt-[10px] relative !bg-[transparent] overflow-hidden">
+          <div className="main w-full h-[95%] mt-[0px] relative !bg-[transparent] overflow-hidden">
             <div className="w-full h-20 z-4 !bg-[#e7e7e7] absolute top-[0px] left-0 flex items-center">
 
               <div className=" bg-[bla] p-2 flex items-center z-[10]">
@@ -524,11 +550,11 @@ function App() {
               <div className="bg-black/0 w-20 h-full"></div>
             </div>
 
-            { (state.annotations.length && !showMedia) ? <Button onClick={toggleMediaSection} className='!absolute z-[10] top-[80px] left-2 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[48px] w-[48px] !p-1 !rounded-full' rounded>
+            { (state.annotations.length && !showMedia) ? <Button onClick={toggleMediaSection} className='!absolute z-[10] top-[85px] left-2 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[48px] w-[48px] !p-1 !rounded-full' rounded>
                 <RiGalleryLine color='#403f43' className='!font-bold' size={24} />
             </Button> : '' }
 
-            { showMedia ? <div class="!absolute z-[10] top-[60px] left-2 !bg-[#e7e7e7] media-section w-[400px] shadow-md rounded-[8px] max-h-[85%] overflow-y-auto">
+            { showMedia ? <div class="!absolute z-[10] top-[85px] left-2 !bg-[#e7e7e7] media-section w-[400px] shadow-md rounded-[8px] max-h-[85%] overflow-y-auto">
               <div className="h-16 relative">
                 <Button onClick={toggleMediaSection} className='!absolute z-[10] top-[8px] right-2 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 !rounded-full' rounded>
                   <RiCloseLine color='#403F43' className='!font-bold' size={24} />
@@ -564,7 +590,7 @@ function App() {
             <Draggable 
               nodeRef={draggableRef} 
               handle="strong" 
-              // bounds="body"
+              bounds="body"
             >
               {/* <div ref={draggableRef} className="draggable-box relative bg-black"> */}
                 
@@ -572,7 +598,7 @@ function App() {
               
               <div 
                 ref={draggableRef}
-                className="draggable-div !fixed z-[10] right-[20px] top-[80px]  flex flex-col border-[0px]"
+                className="draggable-div !fixed z-[10] right-[20px] top-[60px]  flex flex-col border-[0px]"
                 // className="fixed z-[10] right-[50px] top-[145px] bg-[#e7e7e7]/60 backrop-blur-[2px] rounded-lg shadow-sm shadow-[#f1f1f1] w-[450px] h-[fit-content] text-black"
               > 
 
@@ -590,7 +616,7 @@ function App() {
                 <ResizableBox 
                   className="box bg-red-0 h-full w-full mt-[0px] no-cursor" 
                   width={380}
-                  height={450}
+                  height={650}
                   minConstraints={[350, 400]}
                   maxConstraints={[540, 1000]}
                   resizeHandles={["se", "sw"]}
@@ -611,7 +637,7 @@ function App() {
                         globalFilterFields={['name',]}
                         expandedRows={expandedRows}
                         onRowToggle={(e) => { console.log(e); setExpandedRows(e.data); }}
-                        rowExpansionTemplate={rowExpansionTemplate}
+                        // rowExpansionTemplate={rowExpansionTemplate}
                         dataKey="id" 
                         className='!bg-white'
                         tableStyle={{ minWidth: '20rem', background:"white", height:"50vh" }}
@@ -627,11 +653,11 @@ function App() {
                           {/* <Column style={{ flex: '0 0 4rem' }} body={lockTemplate}></Column> */}
                       </DataTable>
 
-                      { (expandedRows) ? <div className="sticky-section z-[10] h-[100%] overflow-y-auto w-full absolute top-[0px] left-0 !bg-[#fff]">
+                      { (expandedRows && state.annotations.length) ? <div className="sticky-section z-[10] h-[100%] overflow-y-auto w-full absolute top-[0px] left-0 !bg-[#fff]">
                         <div class="header-section text-whit p-3 sticky top-0 bg-[inherit] w-full z-2">
                           <div className='flex justify-between items-center'>
                             <div className=''>
-                              {state.annotations[Object.keys(expandedRows)[0]].name}
+                              {state.annotations[parseInt(Object.keys(expandedRows)[0]) - 1].name}
                             </div>
 
                             <Button 
@@ -644,7 +670,10 @@ function App() {
                           </div>
                         </div>
                         <div className="px-2 h-full z-0">
-                            <RowExpansionTemplate data={state.annotations[Object.keys(expandedRows)[0]]} />
+                            <RowExpansionTemplate 
+                              data={state.annotations[parseInt(Object.keys(expandedRows)[0]) - 1]} 
+                              annotationsLinks={annotationsLinks.filter(entry => entry.acf.ids.includes(`${boatSections[activeDeck].floor}.`))} 
+                            />
                         </div>
 
                       </div> : ""}
@@ -788,7 +817,9 @@ function App() {
 }
 
 
-const RowExpansionTemplate = ({data}) => {
+const RowExpansionTemplate = ({data, annotationsLinks}) => {
+  // console.log(annotationsLinks);
+
   const [activeTab, setActiveTab] = useState("overview");
   const tabs = [
     {name:"Overview", id:'overview'}, { name:"Audio & Video", id:"audio_video"},
@@ -812,11 +843,13 @@ const RowExpansionTemplate = ({data}) => {
   }
 
   const getOverviewSection = () => {
+    let item = annotationsLinks.find(link => link.acf.ids.includes(`.${data.id}`));
+    console.log(data, item);
+
     return (
       <div className='w-full'>
           {data.content.raw}
-
-        <iframe src="https://globalsearoutes.net/collections/a3073/" className="min-h-[80vh] h-full w-full"></iframe>
+        <iframe src={!item ? "https://globalsearoutes.net/collections/a3073/" : item.url_iframe} className="min-h-[80vh] h-full w-full"></iframe>
       </div>
     )
   }
@@ -824,7 +857,7 @@ const RowExpansionTemplate = ({data}) => {
 
   return (
     <div className="expansion-section !text-[15px] h-[fit-content] min-h-[50vh]">
-      <div className="header my-3 gap-x-[12px] flex">
+      <div className="header py-3 my-0 gap-x-[12px] flex sticky top-[60px] bg-white">
         {tabs.map(tab =>  (
           <Button 
             className={`tab-button ${activeTab == tab.id ? "!bg-[#AD9A6D] !text-white" : "!bg-[#fff]"} !text-[12px] !py-[1px] !px-[14px] min-w-[80px] h-[38px]`}
