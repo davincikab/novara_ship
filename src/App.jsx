@@ -186,7 +186,7 @@ function App() {
     console.log('Active Deck:', window.activeDeck);
 
     console.log(window.annotations.find(item => item.id == index));
-    setExpandedRows({[parseInt(index)]:true});
+    setExpandedRows({[parseInt(index + 1)]:true});
     setState({...state, isTableOpen:true});
 
 
@@ -205,13 +205,14 @@ function App() {
     let { cam, part, annotations, floor} = boatSections[id];
 
     // if(fullMode) {
+
     nascondiTutto();
     if(activeDeck == id) {
       setActiveDeck("");
       resetCam();
-      
-      setState(prevState => ({...prevState, annotations:[], annotationCount:0}));
       removeAnnotations();
+      setState(prevState => ({...prevState, annotations:[], annotationCount:0}));
+     
     } else {
       window.apiClient.seekTo(4.12);
       if(!fullMode) {
@@ -223,7 +224,7 @@ function App() {
       }
 
       // return;
-     
+      removeAnnotations();
       window.apiClient.setCameraLookAt(cam.eye, cam.target);
       window.annotations = [...annotations.map((entry, i) => ({...entry, id:i+1}))];
       window.activeDeck = id;
@@ -233,7 +234,7 @@ function App() {
       setActiveDeck(id);
       setExpandedRows(null);
 
-      removeAnnotations();
+      
       createAnnotations(annotations);
     }
 
@@ -241,6 +242,7 @@ function App() {
   }
 
   const createAnnotations = (annotations) => {
+    window.apiClient.removeAllAnnotations();
 
     for (let i in annotations) {
       window.apiClient.createAnnotationFromScenePosition(
@@ -272,8 +274,11 @@ function App() {
   }
 
   const removeAnnotations = () => {
-    window.apiClient.removeAllAnnotations(function (err) {
+    window.apiClient.removeAllAnnotations(
+    function (err) {
+      // console.log(err);
       if (!err) {
+        
         //audio.play();
       }
       
@@ -395,12 +400,23 @@ function App() {
 
   const renderHeader = () => {
       return (
-          <div className="flex justify-between !text-[#403F43] !bg-white flex-col h-full overflow-hidden">
+          <section className="cursor cursor-move handle flex justify-between !text-[#403F43] !bg-white flex-col h-full overflow-hidden relative">
               <div className="py-3 text-[#403F43] font-bold text-[18px] flex items-center">
                 <span className="mx-2"><Icons name={activeDeck} is_active={false}/> </span>
                 
                 {boatSections[activeDeck].name}
+
+                <Button 
+                  onClick={toggleTable} 
+                  className={`close-btn !absolute ${expandedRows ? `top-[0px] right-[0px]` : "top-[15px] right-[10px]"} !h-[40px] !w-[40px] !p-0 flex items-center justify-center !z-12 !border-[2px]`}
+                  
+                >
+                  <RiCloseLine color='#403F43' className='!font-bold text-2xl' size={24} />
+                </Button>
               </div>
+
+              {/* <strong className="cursor cursor-move w-full h-[80px] bg-[orange] handle absolute z-2" > 
+              </strong>  */}
 
               <div className='w-full flex items-center justify-between'>
                 <IconField iconPosition="left" className='flex-1'>
@@ -415,7 +431,7 @@ function App() {
                   {/* </ButtonGroup> */}
                 </div>
               </div>
-          </div>
+          </section>
       );
   };
 
@@ -488,7 +504,7 @@ function App() {
               <img src="/logo.png" alt="Novara Vessel" className='w-[60px]' />
             </div>
 
-            <div className="flex gap-x-[12px] text-[#403F43] mx-auto hidden">
+            <div className="flex gap-x-[12px] text-[#403F43] mx-auto">
 
               {
                 Object.keys(boatSections).map(sectionId => {
@@ -513,7 +529,7 @@ function App() {
           </div>
 
           <div className="main w-full h-[95%] mt-[0px] relative !bg-[transparent] overflow-hidden">
-            <div className="w-full h-20 z-4 !bg-[#e7e7e7] absolute top-[0px] left-0 flex items-center">
+            <div className="w-full h-12 z-4 !bg-[#e7e7e7] absolute top-[0px] left-0 flex items-center !bg-bla hidden">
 
               <div className=" bg-[bla] p-2 flex items-center z-[10]">
                 <Button onClick={resetViewer} className='!bg-[#f1f1f1] border-[0.5px] !border-[#CDCDDF] h-[40px] w-[40px] backrop-blur-[30px] !p-1 flex items-center justify-center rounded-full' rounded>
@@ -526,7 +542,7 @@ function App() {
                 </div> 
               </div>
 
-              <div className="flex gap-x-[12px] text-[#403F43] mx-auto">
+              <div className="flex gap-x-[12px] text-[#403F43] mx-auto hidden">
 
                 {
                   Object.keys(boatSections).map(sectionId => {
@@ -550,7 +566,7 @@ function App() {
               <div className="bg-black/0 w-20 h-full"></div>
             </div>
 
-            { (state.annotations.length && !showMedia) ? <Button onClick={toggleMediaSection} className='!absolute z-[10] top-[85px] left-2 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[48px] w-[48px] !p-1 !rounded-full' rounded>
+            { (state.annotations.length && !showMedia) ? <Button onClick={toggleMediaSection} className='!absolute z-[10] top-[60px] left-2 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[48px] w-[48px] !p-1 !rounded-full' rounded>
                 <RiGalleryLine color='#403f43' className='!font-bold' size={24} />
             </Button> : '' }
 
@@ -582,14 +598,14 @@ function App() {
               </div>
             </div> : "" }
 
-            { (activeDeck && !state.isTableOpen ) ? <Button onClick={toggleTable} className='!absolute z-[10] top-[15px] right-4 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 !rounded-full' rounded>
+            { (activeDeck && !state.isTableOpen ) ? <Button onClick={toggleTable} className='!absolute z-[10] top-[60px] right-4 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 !rounded-full' rounded>
                 <RiArrowLeftDoubleLine color='#403F43' className='!font-bold' size={28} />
               </Button> : "" }
 
             { (activeDeck && state.isTableOpen ) && 
             <Draggable 
               nodeRef={draggableRef} 
-              handle="strong" 
+              handle="section" 
               bounds="body"
             >
               {/* <div ref={draggableRef} className="draggable-box relative bg-black"> */}
@@ -598,32 +614,32 @@ function App() {
               
               <div 
                 ref={draggableRef}
-                className="draggable-div !fixed z-[10] right-[20px] top-[60px]  flex flex-col border-[0px]"
+                className="draggable-div !fixed z-[10] right-[20px] top-[60px]  flex flex-col border-[0px] relative"
                 // className="fixed z-[10] right-[50px] top-[145px] bg-[#e7e7e7]/60 backrop-blur-[2px] rounded-lg shadow-sm shadow-[#f1f1f1] w-[450px] h-[fit-content] text-black"
               > 
 
-                <strong className="cursor cursor-move w-full h-[80px] bg-[transparent] handle" > 
-                </strong>
+                {/* <strong className="cursor cursor-move w-full h-[80px] bg-[transparent] handle" > 
+                </strong> */}
 
-                <Button 
+                {/* <Button 
                   onClick={toggleTable} 
-                  className="close-btn !absolute top-[10px] right-[20px] !p-0 flex items-center justify-center"
-                  // className='!absolute top-[20px] right-[20px] flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 rounded-full' rounded
+                  className={`close-btn !hidden !absolute ${expandedRows ? `top-[0px] right-[25px]` : "top-[15px] right-[10px]"} !h-[40px] !w-[40px] !p-0 flex items-center justify-center !z-12 !border-[2px]`}
+                  // className='!absolute top-[20px] right-[20px] flex items-center justify-center !bg-[#CAC2B0]  !border-[#AD9A6D] h-[50px] w-[50px] !p-1 rounded-full' rounded
                 >
-                  <RiCloseLine color='#403F43' className='!font-bold text-2xl' size={28} />
-                </Button>
+                  <RiCloseLine color='#403F43' className='!font-bold text-2xl' size={24} />
+                </Button> */}
 
                 <ResizableBox 
-                  className="box bg-red-0 h-full w-full mt-[0px] no-cursor" 
+                  className="box bg-red-0 h-full w-full mt-[0px]" 
                   width={380}
                   height={650}
                   minConstraints={[350, 400]}
-                  maxConstraints={[540, 1000]}
+                  maxConstraints={[540, 800]}
                   resizeHandles={["se", "sw"]}
                 >
                 <div className="h-full overflow-hidden h-full w-full mt-[0px] rounded-[8px]">  
                 
-                  <div className="list-group h-[fit-content] overflow-y-hidden relative bg-orange">
+                  <div className="list-group overflow-y-hidden relative bg-orange">
 
                       <DataTable 
                         value={state.annotations.filter(item => !lockedAnnotations.find(annotation => annotation.id == item.id))} 
@@ -639,10 +655,11 @@ function App() {
                         onRowToggle={(e) => { console.log(e); setExpandedRows(e.data); }}
                         // rowExpansionTemplate={rowExpansionTemplate}
                         dataKey="id" 
-                        className='!bg-white'
+                        className='!bg-white cursor h-full'
                         tableStyle={{ minWidth: '20rem', background:"white", height:"50vh" }}
                         scrollable
-                        scrollHeight="50vh"
+                        showHeaders={false}
+                        scrollHeight="75%"
                         frozenValue={lockedAnnotations}
                         style={{ background:"white"}}
                       >
@@ -653,29 +670,32 @@ function App() {
                           {/* <Column style={{ flex: '0 0 4rem' }} body={lockTemplate}></Column> */}
                       </DataTable>
 
-                      { (expandedRows && state.annotations.length) ? <div className="sticky-section z-[10] h-[100%] overflow-y-auto w-full absolute top-[0px] left-0 !bg-[#fff]">
-                        <div class="header-section text-whit p-3 sticky top-0 bg-[inherit] w-full z-2">
-                          <div className='flex justify-between items-center'>
-                            <div className=''>
-                              {state.annotations[parseInt(Object.keys(expandedRows)[0]) - 1].name}
+                      { 
+                      (state.annotations.length) ? 
+                      <div className={`sticky-section z-[10] h-[100%] overflow-y-auto max-w-full w-full absolute top-[0px] transition-all duration-500 ease-in-out ${expandedRows ? 'left-0': 'left-[100%]' } !bg-[#fff]`}>
+                        {expandedRows  && <>
+                        <section class="handle cursor header-section p-3 sticky top-0 bg-[inherit] w-full z-2">
+                          <div className='flex justify-between items-center w-[90%]'>
+                            <div className='flex items-center flex-row-reverse'>
+                              <div>{state.annotations[parseInt(Object.keys(expandedRows)[0]) - 1].name}</div>
+                              <Button   
+                                onClick={(e) => setExpandedRows(null)} 
+                                className="!bg-[#e7e7e7] !border-[#AD9A6D] !rounded-full !p-0 z-[25] flex items-center justify-center !left-0 !relative !h-[32px] !w-[32px] !border-[2px] !mr-2"
+                                // className='!absolute top-[20px] right-[20px] flex items-center justify-center  !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 rounded-full' rounded
+                              >
+                                <RiArrowLeftDoubleLine color='#403F43' className='!font-bold text-2xl' size={22} />
+                              </Button>
                             </div>
-
-                            <Button 
-                              onClick={(e) => setExpandedRows(null)} 
-                              className="close-btn !p-0 flex items-center justify-center !relative !h-[40px] !w-[40px] !border-[2px]"
-                              // className='!absolute top-[20px] right-[20px] flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 rounded-full' rounded
-                            >
-                              <RiCloseLine color='#403F43' className='!font-bold text-2xl' size={22} />
-                            </Button>
                           </div>
-                        </div>
+                        </section>
+
                         <div className="px-2 h-full z-0">
                             <RowExpansionTemplate 
                               data={state.annotations[parseInt(Object.keys(expandedRows)[0]) - 1]} 
                               annotationsLinks={annotationsLinks.filter(entry => entry.acf.ids.includes(`${boatSections[activeDeck].floor}.`))} 
                             />
                         </div>
-
+                      </>}
                       </div> : ""}
                   </div>
                   
@@ -712,7 +732,7 @@ function App() {
             }
 
             <div className="w-full h-[95%] bg-[#e7e7e7] shadow-none border-[0px] rounded-md relative">
-              <div className="h-16 absolute !bg-[#e7e7e7] w-full"></div>
+              <div className="h-12 absolute !bg-[#e7e7e7] w-full"></div>
               <div className="h-full w-full">
                 <SketchfabViewer modelUid={modelUid} success={onsuccess} error={onerror} />
               </div>
@@ -731,6 +751,19 @@ function App() {
                   <Button label='Open'  onClick={() => {onLevelsChange({value:5, animate:true})}} className='!px-[12px] !py-[5px] !border-[#CDCDDF] !bg-[inherit] !rounded-[100px] !text-[10px]' />
                 </div>
               </div>
+
+
+              <div className=" bg-[bla] p-2 flex items-center z-[10] absolute bottom-[120px]  ">
+                <Button onClick={resetViewer} className='!bg-[#f1f1f1] border-[0.5px] !border-[#CDCDDF] h-[40px] w-[40px] backrop-blur-[30px] !p-1 flex items-center justify-center rounded-full' rounded>
+                  <RiArrowLeftSLine size={30} color=''/>
+                </Button>  
+
+                <div className='flex flex-col !mx-4 title-section'>
+                  <h5 className="font-bold text-[22px] text-[#403F43] my-0">Novara</h5>
+                  <div className='text-[#5D6C71] text-[14px] my-0 capitalize'> { activeDeck ?boatSections[activeDeck].name : ""}</div> 
+                </div> 
+              </div>
+
             </div>
 
             <div className="absolute bottom-0 left-0 flex items-end w-auto !py-4 hidden">
