@@ -1,0 +1,13 @@
+{
+    "sails":"Vele",
+    "mainDeck":"Ponte Principale",
+    "upperDeck":"Ponte Superiore",
+    "lowerDeck":"Ponte Inferiore",
+    "hold":"Stiva",
+    "lowerHold":"Stiva Inferiore",
+    "levels":"Livelli",
+    "open":"Apri",
+    "close":"Chiudi",
+    "full":"Pieno",
+    "single":"Singolo"
+}

@@ -5,12 +5,15 @@ import 'primereact/resources/themes/bootstrap4-light-blue/theme.css';
 import App from './App.jsx'
 
 import { PrimeReactProvider } from 'primereact/api';
+import { LocalizationProvider } from './LocalizationProvider.jsx';
         
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <PrimeReactProvider>
-      <App />
-    </PrimeReactProvider>
+    <LocalizationProvider>
+      <PrimeReactProvider>
+        <App />
+      </PrimeReactProvider>
+    </LocalizationProvider>
   </StrictMode>,
 )

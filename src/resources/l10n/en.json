@@ -1,0 +1,13 @@
+{
+    "sails":"Sails",
+    "mainDeck":"Main Deck",
+    "upperDeck":"Upper Deck",
+    "lowerDeck":"Lower Deck",
+    "hold":"Hold",
+    "lowerHold":"Lower Hold",
+    "levels":"Levels",
+    "open":"Open",
+    "close":"Close",
+    "full":"Full",
+    "single":"Single"
+}
