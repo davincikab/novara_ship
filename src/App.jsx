@@ -41,6 +41,8 @@ const boatSections = {
   'lowerHold':{floor:5, cam:camLH, part:part5,annotations:gaLH, name:"Lower Hold" }
 };
 
+window.BoatSections = boatSections;
+
 
 // const iSails = new NovaraParts("sails", part0, camSA);
 // const iMainDeck = new NovaraParts("mainDeck", part1, camMD);
@@ -116,15 +118,57 @@ function App() {
 
       // console.log(api);
 
+      window.apiClient.load();
+      window.apiClient.start();
+
       window.apiClient.addEventListener("viewerready", () => {
         console.log("View Ready");
         // document.getElementById("panel").classList.remove("hidden");
-        window.apiClient.getSceneGraph((err, result) => {
+        window.apiClient.getSceneGraph((err, graph) => {
           if (err) {
             console.log("Error getting nodes");
             return;
-          } // get the id from that log
-          //console.log(result);
+          } 
+
+          const gruppiPrincipali = {
+            "99":"sails",
+            "248": "piano1",
+            "2619": "piano2",
+            "8131": "piano3",
+            "11817": "piano4"
+          };
+  
+          window.nodeMap = {};
+  
+          // Funzione ricorsiva per costruire la mappa dei nodi
+          function buildNodeMap(node, parent = null) {
+            window.nodeMap[node.instanceID] = {...node, parent};
+            if (node.children) {
+              node.children.forEach(child => buildNodeMap(child, node));
+            }
+          }
+
+          function stampaGerarchia(node, livello = 0) {
+            const indent = '  '.repeat(livello);
+          //  console.log(`${indent}- ${node.name || '(senza nome)'} [ID: ${node.instanceID}]`);
+        
+            // Salva il nodo nella mappa
+            window.nodeMap[node.instanceID] = {
+              ...node,
+              parent: node.parent // parent può essere undefined qui
+            };
+        
+            if (node.children && node.children.length > 0) {
+              node.children.forEach(child => {
+                child.parent = node; // assegna il parent manualmente
+                stampaGerarchia(child, livello + 1);
+              });
+            }
+          }
+        
+          stampaGerarchia(graph);
+          
+          // get the id from that log
           window.apiClient.load( () => {
             window.console.log("Viewer loaded");
             playSound();
@@ -182,6 +226,8 @@ function App() {
 
           window.apiClient.addEventListener("click", (info) => {
             console.log(info);
+            if (!info || !info.instanceID) return;
+            handleSectionClick(info);
           });
 
         });
@@ -190,8 +236,37 @@ function App() {
 
 
   const onerror = () => {
-    console.error("Sketchfab API error");
+    
   };
+
+  const handleSectionClick = (info) => {
+    console.log(info);
+
+    // return;
+    const gruppiPrincipali = {
+      "99":"sails",
+      "248": "mainDeck",
+      "2619": "upperDeck",
+      "8131": "lowerDeck",
+      "11817": "hold",
+      "12571": "lowerHold"
+    };
+
+    let currentNode = nodeMap[info.instanceID];
+
+    // Cerca risalendo la gerarchia il maxi-gruppo
+    while (currentNode) {
+      const id = currentNode.instanceID.toString();
+      if (gruppiPrincipali[id]) {
+        console.log(`You clicked on: ${gruppiPrincipali[id]}`);
+        //console.log(`Gruppo trovato: ${gruppiPrincipali[id]}`);
+
+        onClick({ target: { id: gruppiPrincipali[id] } });
+        return;
+      }
+      currentNode = currentNode.parent;
+    }
+  }
 
   const focusToAnnotation = (index) => {
     console.log('Active Deck:', window.activeDeck);
@@ -204,6 +279,7 @@ function App() {
   }
 
   const onClick = (e) => {
+    console.log(e);
     let { id } = e.target;
     // console.log("Click:", id, fullMode);
     // console.log(window.apiClient);
@@ -211,8 +287,8 @@ function App() {
       return;
     }
 
-    console.log(boatSections[id]);
-    let { cam, part, annotations, floor} = boatSections[id];
+    console.log(window.BoatSections[id]);
+    let { cam, part, annotations, floor} = window.BoatSections[id];
 
     // if(fullMode) {
 
@@ -243,6 +319,7 @@ function App() {
       setSelectedAnnotation(null)
       setActiveDeck(id);
       setExpandedRows(null);
+      setIsDetailTabOpen(false);
 
       
       createAnnotations(annotations);
@@ -422,17 +499,21 @@ function App() {
           <section className="cursor cursor-move handle flex justify-between !text-[#403F43] !bg-white flex-col h-full overflow-hidden relative">
               <div className="py-3 text-[#403F43] font-bold text-[18px] flex items-center bg-lack">
                 <div className="flex-1 flex items-center">
-                  <span className="mx-2"><Icons name={activeDeck} is_active={false}/> </span>
+                  <span className="mx-2 hidden"><Icons name={activeDeck} is_active={false}/> </span>
                   {t(activeDeck)}
                 </div>
 
-                <div className='flex-1'>
+                <div className='flex-1 bg-red-00'>
                   <RiDraggable className='rotate-[90deg]' size={32}/>
+                </div>
+
+                <div className="w-[40px] h-[40px]">
+
                 </div>
 
                 <Button 
                   onClick={toggleTable} 
-                  className={`close-btn !absolute ${expandedRows ? `top-[8px] right-[10px]` : "top-[8px] right-[10px]"} !h-[40px] !w-[40px] !p-0 flex items-center justify-center !z-12 !border-[2px]`}
+                  className={`close-btn !absolute ${expandedRows ? `top-[12px] right-[0px]` : "top-[12px] right-[0px]"} !h-[40px] !w-[40px] !p-0 flex items-center justify-center !z-12 !border-[2px]`}
                   
                 >
                   <RiCloseLine color='#403F43' className='!font-bold text-2xl' size={24} />
@@ -684,7 +765,7 @@ function App() {
                         globalFilterFields={['name',]}
                         expandedRows={expandedRows}
                         onRowToggle={(e) => { console.log(e); setExpandedRows(e.data); setIsDetailTabOpen(true); }}
-                        // rowExpansionTemplate={rowExpansionTemplate}
+                        // rowExpansionTemplate={() => (<div className="!h-0"><div>)}
                         dataKey="id" 
                         className='!bg-white cursor h-full'
                         tableStyle={{ minWidth: '20rem', background:"white", height:"50vh" }}
@@ -708,7 +789,7 @@ function App() {
                         <section class="handle cursor header-section p-3 sticky top-0 bg-[inherit] w-full z-2">
                           <div className='flex justify-between items-center w-[90%]'>
 
-                            <div className='flex items-center flex-row-reverse mb-3 mt-2 w-full'>
+                            <div className='flex items-center flex-row-reverse mb-3 mt-3 w-full'>
                               <div className='hidden'>{state.annotations[parseInt(Object.keys(expandedRows)[0]) - 1].name}</div>
 
                               <div className='flex-1 flex justify-center'>
@@ -908,7 +989,7 @@ const RowExpansionTemplate = ({data, annotationsLinks, language}) => {
 
   const onLoad = () => {
     // console.log("Iframe load");
-    let turnOffLang = language == "en" ? "ita" : "en";
+    let turnOffLang = language == "en" ? "ita" : "eng";
 
     if(iframeRef.current) {
       const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
@@ -948,7 +1029,7 @@ const RowExpansionTemplate = ({data, annotationsLinks, language}) => {
           ref={iframeRef} 
           src={!item ? "https://globalsearoutes.net/collections/a3073/" : item.acf.url_iframe} 
           onLoad={onLoad}
-          className="min-h-[100%] h-full w-full"
+          className="min-h-[100%] h-full w-full !border-0"
         ></iframe>
       </div>
     )

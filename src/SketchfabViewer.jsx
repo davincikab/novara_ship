@@ -18,9 +18,9 @@ const SketchfabViewer = ({ modelUid, success, error }) => {
         ui_color: "#D9D9D9", // Usage: Setting to a hexidecimal color code (without the #) or a HTML color name will change the color of the viewer loading bar.
         ui_watermark: 0, // Usage: Setting to 0 remove the Sketchfab logo watermark.
         
-        autostart: 0,
+        autostart: 1,
         ui_controls:0,
-        preload: 0,
+        preload: 1,
         success: success,
         error: () => console.error("Failed to load Sketchfab Viewer."),
       });
