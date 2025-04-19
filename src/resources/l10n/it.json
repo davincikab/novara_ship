@@ -1,7 +1,7 @@
 {
     "sails":"Vele",
-    "mainDeck":"Ponte Principale",
-    "upperDeck":"Ponte Superiore",
+    "mainDeck":"Ponte di coperta",
+    "upperDeck":"Ponte di batteria",
     "lowerDeck":"Ponte Inferiore",
     "hold":"Stiva",
     "lowerHold":"Stiva Inferiore",

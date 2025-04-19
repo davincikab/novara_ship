@@ -35,7 +35,7 @@ export default function LanguageDiv({ bgColor="transparent"}) {
             <button 
                 type="button" 
                 onClick={() => { setState({...state, openLanguageDropwdown: !state.openLanguageDropwdown})}} 
-                className={`md:px-3 ${isTransparent ? 'md:text-white' :'text-black'} md:text-[14px] text-black border-[#A7AFBE] md:top-[10px] md:h-[48px] md:w-auto border-[1px] rounded-full md:right-10 h-10 w-10 flex items-center font-medium justify-center px-1 md:py-1 text-xs cursor-pointer md:border-[#A7AFBE] `}
+                className={`md:px-3 ${isTransparent ? 'md:text-white' :'text-black'} md:text-[13px] text-black border-[#A7AFBE] md:top-[10px] md:h-[40px] bg-white md:w-auto border-[1px] rounded-full md:right-10 h-10 w-10 flex items-center font-medium justify-center px-1 md:py-1 text-xs cursor-pointer md:border-[#A7AFBE] `}
             >
                 <div className="md:me-2 flex items-center justify-center overflow-hidden rounded-full">
                     {/* <ReactCountryFlag countryCode={languages[language].country} svg className=' text-[24px] rounded-full'/>  */}
@@ -47,8 +47,10 @@ export default function LanguageDiv({ bgColor="transparent"}) {
                 <RiArrowDownSLine className="hidden md:block"/>
             </button>
 
-            <div 
-                className={`z-[60] absolute text-[16px] md:top-[50px] md:right-0 right-0 top-24px] w-44 ${state.openLanguageDropwdown ? "" : "hidden"} text-sm p-3 my-4 text-base list-none bg-white  rounded-lg shadow`} 
+           {/* SELETTORE LINGUA
+            */}
+             <div 
+                className={`z-[60] absolute text-[14px] w-24 md:top-[35px] md:right-0 right-0 top-[15px] ${state.openLanguageDropwdown ? "" : "hidden"} p-3 my-4 text-base list-none bg-white  rounded-lg shadow`} 
                 id="language-dropdown-menu"
                 
             >
@@ -61,7 +63,7 @@ export default function LanguageDiv({ bgColor="transparent"}) {
                             <a 
                                 href="#" 
                                 onClick={(e) => { e.preventDefault(); setLanguage(it.code); setState({...state, openLanguageDropwdown:false}) }} 
-                                className="block font-semibold text-black hover:bg-gray-0 flex items-center" 
+                                className="font-semibold text-black hover:bg-gray-0 flex items-center" 
                                 role="menuitem"
                             >
                                 <div className="inline-flex items-center">
@@ -69,7 +71,7 @@ export default function LanguageDiv({ bgColor="transparent"}) {
                                         {/* <ReactCountryFlag countryCode={it.country} svg className='text-[30px] rounded-full '/>  */}
                                         <img src={countryFlags[it.code]} alt="" className='h-full rounded-full md:w-[30px] w-[20px]' /> 
                                     </div>   
-                                    <span className='uppercase'>{it.code} </span>- {it.name} 
+                                    <span className='uppercase text-sm-'>{it.code} </span>
                                 </div>
                             </a>
                         </li>
