@@ -8,7 +8,7 @@ import {
   
   const languages = {
     en: { data: en, country: 'US', name: 'English' },
-    it: { data: it, country: 'IT', name: 'Italia' }
+    it: { data: it, country: 'IT', name: 'Italiano' }
   };
 
 
