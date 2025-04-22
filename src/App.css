@@ -36,7 +36,7 @@ iframe .titlebar {
 .p-datatable .p-datatable-tbody > tr > td {
   font-size: 14px !important;
   box-sizing: border-box;
-  /* padding: 24px 27px; */
+  padding: 10px 15px;
   /* gap: 10px; */
   text-align:center;
   /* width: 72px;
