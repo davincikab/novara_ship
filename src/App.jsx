@@ -675,9 +675,9 @@ function App() {
               <div className="bg-black/0 w-20 h-full"></div>
             </div>
 
-            { (state.annotations.length && !showMedia) ? <Button onClick={toggleMediaSection} className='!absolute z-[10] top-[60px] left-2 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[48px] w-[48px] !p-1 !rounded-full' rounded>
+            {/* { (state.annotations.length && !showMedia) ? <Button onClick={toggleMediaSection} className='!absolute z-[10] top-[60px] left-2 flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[48px] w-[48px] !p-1 !rounded-full' rounded>
                 <RiGalleryLine color='#403f43' className='!font-bold' size={24} />
-            </Button> : '' }
+            </Button> : '' } */}
 
             { showMedia ? <div class="!absolute z-[10] top-[85px] left-2 !bg-[#e7e7e7] media-section w-[400px] shadow-md rounded-[8px] max-h-[85%] overflow-y-auto">
               <div className="h-16 relative">
@@ -739,7 +739,7 @@ function App() {
                 </Button> */}
 
                 <ResizableBox 
-                  className="box bg-red-0 h-full w-full mt-[0px] no-cursor" 
+                  className="box bg-red-0 h-full w-full mt-[0px] no-cursor rounded-[16px] shadow-lg" 
                   width={380}
                   height={650}
                   minConstraints={[350, 400]}
@@ -1060,10 +1060,8 @@ const RowExpansionTemplate = ({data, annotationsLinks, language}) => {
 
 
 /*
-  - Sticky Row Expansion: 
-  - Bar to hide sketchfab icons:Done
-  - draggable table section:Done
-  - Remove view options: Done
+  - Table to Cards
+  - 
   - 
 */
 export default App
