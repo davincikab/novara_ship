@@ -1,3 +1,5 @@
+import { RiSailboatLine } from "@remixicon/react";
+
 const Icons = ({name, is_active}) => {
     switch(name) {
         case 'sails':

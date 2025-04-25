@@ -1,3 +1,5 @@
+
+
 .p-slider {
   background-color: rgb(214, 214, 214);
 }
@@ -96,33 +98,39 @@ h5 {
 }
 
 .nav-btn {
-  /* headers */
-
-  /* Auto layout */
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   padding: 1px 24px !important;
   gap: 12px;
-
   max-width: 250px;
   height: 40px;
   width:fit-content;
-
-  /* Black */
-  /* background: #403F43; */
-  /* stroke/strokes [day] */
   border: 0.5px solid #CDCDDF;
   backdrop-filter: blur(28px);
-  /* Note: backdrop-filter has minimal browser support */
   border-radius: 100px;
-
-  /* Inside auto layout */
   flex: none;
   order: 2;
   flex-grow: 0;
   background: rgba(255, 255, 255, 0.4);
+}
+
+.btn-sm {
+  max-width: 100px;
+  height: 30px;
+  width:fit-content;
+  padding: 3px 10px !important;
+  gap:0px;
+  font-size: 12px !important;
+}
+
+.btn-sm:hover {
+  background: rgba(173, 154, 109, 0.4);
+  border: 0.5px solid #CDCDDF;
+  backdrop-filter: blur(28px);
+  border-radius: 100px;
+  color:#403F43
 }
 
 .nav-btn > *  {
@@ -205,6 +213,8 @@ h5 {
   backdrop-filter: blur(28px);
   /* Note: backdrop-filter has minimal browser support */
   border-radius: 24px;
+  pointer-events: all;
+  cursor: pointer;
 
   /* Inside auto layout */
   flex: none;

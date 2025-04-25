@@ -36,6 +36,11 @@ body {
   height:100%;
   font-family: "Inter", sans-serif !important;
   background:#e7e7e7;
+  --animation-nav: 0.5s cubic-bezier(0.6, 0, 0.4, 1);
+  --animation-primary: 0.5s cubic-bezier(0.3, 1, 0.3, 1);
+  --animation-smooth: 0.7s cubic-bezier(0.7, 0, 0.3, 1);
+  --animation-fast: 0.3s cubic-bezier(0.7, 0, 0.3, 1);
+  --animation-short: 0.2s cubic-bezier(0.7, 0, 0.3, 1);
 }
 
 .react-draggable, .cursor {
@@ -118,3 +123,27 @@ body {
   bottom: 0;
   transform: rotate(45deg);
 }
+
+
+/* Hide scrollbar in Chrome, Safari, and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar in IE, Edge, and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.listing-section {
+  transition: var(--animation-primary) .35s;
+  transition-property: opacity, visibility;
+}
+
+.list-item {
+  /* opacity: 0; */
+  /* transform: translateX(100px) translateY(50px); */
+  transition-property: transform, opacity;
+  transition: var(--animation-primary) .35s;
+} 

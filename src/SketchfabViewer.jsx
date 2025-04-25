@@ -31,7 +31,8 @@ const SketchfabViewer = ({ modelUid, success, error }) => {
     <iframe
       ref={iframeRef}
       title="Sketchfab Viewer"
-      style={{ width: "100%", height: "calc(100svh + 100px)", position:"absolute", top:"-60px", border: "none", backgroundColor:"#D9D9D9" }}
+      className="md:top-[-60px] top-0"
+      style={{ width: "100%", height: "100%", position:"absolute", border: "none", backgroundColor:"#D9D9D9", zIndex: 0 }}
     />
   );
 };
