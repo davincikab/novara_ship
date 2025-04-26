@@ -360,11 +360,13 @@ function App() {
       function (err) {
         // console.log(err);
         if (!err) {
-
+          // window.apiClient.removeAllAnnotations();
           //audio.play();
         }
 
       });
+
+      // setTi
   }
 
   const resetCam = () => {

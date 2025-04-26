@@ -10,6 +10,11 @@ html {
   height:100%;
 }
 
+
+html, body {
+  overscroll-behavior: none;
+}
+
 :root, * {
   font-family: "Inter", sans-serif !important;
 }

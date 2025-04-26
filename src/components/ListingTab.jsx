@@ -23,7 +23,11 @@ export default function ListingTab({
     const t = useTranslation();
 
     const handlers = useSwipeable({
+      preventDefaultTouchmoveEvent: true,
       onSwiped:(eventData) => {
+          console.log(eventData.dir, eventData);
+
+          eventData.event.preventDefault();
           if(eventData.dir == "Down") {
               toggleTable();
           }
@@ -66,9 +70,9 @@ export default function ListingTab({
 
     const renderHeader = () => {
         return (
-          <div className=" handle flex justify-between !text-[#403F43] flex-col h-full overflow-hidden relative">
+          <div className="handle flex justify-between !text-[#403F43] flex-col h-full overflow-hidden relative">
 
-            <section {...handlers} className="cursor cursor-move py-3 text-[#403F43] font-bold text-[18px] flex items-center bg-lack my-2 z-0"> 
+            <section className="cursor cursor-move py-3 text-[#403F43] font-bold text-[18px] flex items-center bg-lack my-2 z-0"> 
               <div className="flex-1 flex items-center">
                 <span className="mx-2 hidden"><Icons name={activeDeck} is_active={false} /> </span>
                 {/*               {t(activeDeck)}  TESTO PONTE */}
@@ -119,7 +123,7 @@ export default function ListingTab({
 
 
         return (
-            <div className={`!bg-[#fff] listing-section overflow-hidden w-full mt-[0px] rounded-[16px] h-full  ${isTableOpen ? 'opacity-[100] visible' : 'opacity-[0] invisible' }`}   >
+            <div className={`!bg-[#fff] listing-section overflow-hidden w-full mt-[0px] rounded-[16px] h-full`}   >
 
                   <div className="list-group w-full overflow-hidden relative h-full">
 
@@ -175,7 +179,7 @@ export default function ListingTab({
                             /> : ""
                         }
 
-                        {isDetailTabOpen && <div className="absolute bottom-2 z-4 flex justify-between items-center w-full h-[50px] bg-white border-t-[1px] border-[#d9d9d9] px-2">
+                        {(isDetailTabOpen && expandedRows) && <div className="absolute bottom-2 z-4 flex justify-between items-center w-full h-[50px] bg-white border-t-[1px] border-[#d9d9d9] px-2">
                           <div className="flex-1">
                             <Button className='nav-btn btn-sm text-black text-[12px]' onClick={() => gotoAnnotation(parseInt(Object.keys(expandedRows)[0]) - 1)} >
                               <RiArrowLeftSLine size={18}/>
@@ -201,14 +205,14 @@ export default function ListingTab({
     if(device == "Mobile") {
         // ${!isOpen ? 'top-[100vh]' : 'top-[100px]'}
         return (
-            <div className={`detail-tab !absolute w-full z-[10] h-[calc(100svh-120px)] left-0  ${isTableOpen ? "translate-y-[100px]" : "translate-y-[100vh]" } transition-transform duration-700 !p-0 border-0 no-cursor`}>
+            <div {...handlers} className={`detail-tab !absolute w-full z-[10] h-[calc(100svh-120px)] left-0  ${isTableOpen ? "translate-y-[100px]" : "translate-y-[100vh]" } transition-transform duration-700 !p-0 border-0 no-cursor`}>
                 { annotations.length ? getContent() : ""}
             </div>
         )
     }
 
     // console.log(isDetailTabOpen, expandedRows, openDetailTab);
-    return (true &&
+    return (isTableOpen &&
         <Draggable
             nodeRef={draggableRef}
             handle="section"
@@ -220,9 +224,9 @@ export default function ListingTab({
 
             <div
               ref={draggableRef}
-              className={`draggable-div ${isTableOpen ? "translate-y-[100px]" : "translate-y-[100vh]" } transition-transform duration-700 !fixed z-[10] top-24 md:right-[10px] !p-0 border-0 no-cursor`}
+              className={`draggable-div !fixed z-[10] top-24 md:right-[10px] !p-0 border-0 no-cursor ${isTableOpen ? 'hidden' : ""}`}
             >
-
+              {/* ${isTableOpen ? "translate-y-[100px]" : "translate-y-[100vh]" } transition-transform duration-700 */}
 
               <ResizableBox
                 className="box bg-red-0 w-full mt-[0px] no-cursor "

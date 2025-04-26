@@ -31,6 +31,7 @@ export default function DetailTab({expandedRows, language, annotations, annotati
               <RowExpansionTemplate
                   data={annotations[parseInt(Object.keys(expandedRows)[0]) - 1]}
                   annotationsLinks={annotationsLinks.filter(entry => entry.acf.ids.includes(`${boatSections[activeDeck].floor}.`))}
+                  floor={boatSections[activeDeck].floor}
                   language={language}
               />
             </div>
@@ -41,7 +42,7 @@ export default function DetailTab({expandedRows, language, annotations, annotati
 }
 
 
-const RowExpansionTemplate = ({ data, annotationsLinks, language }) => {
+const RowExpansionTemplate = ({ data, annotationsLinks, language, floor }) => {
     // console.log(annotationsLinks);
   
     const [activeTab, setActiveTab] = useState("overview");
@@ -62,11 +63,11 @@ const RowExpansionTemplate = ({ data, annotationsLinks, language }) => {
             // iframeDoc.querySelectorAll(`.${turnOffLang}`).forEach(elem => {
             //     elem.style.display = "none";
             // }); 
-            setIsLoading(false);
+            // setIsLoading(false);
         } catch (error) {
-            setIsLoading(false);
+            // setIsLoading(false);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
         
     }
@@ -98,14 +99,14 @@ const RowExpansionTemplate = ({ data, annotationsLinks, language }) => {
     }
   
     const getOverviewSection = () => {
-      let item = annotationsLinks.find(link => link.acf.ids.includes(`.${data.id}`));
+      let item = annotationsLinks.find(link => link.acf.ids === `${floor}.${data.id}`);
       let url =  item ? item.acf.url_iframe + `?${language}` : ""; 
 
       return (
         <div className='w-full h-full relative'>
           {/* {data.content.raw} */}
           
-          <div className={`loader ${!isLoading ? 'opacity-0 hidden' : 'opacity-100'} w-full h-full bg-[#fff] z-[100] flex flex-col items-center justify-center`}>
+          <div className={`loader ${!isLoading ? 'opacity-0 hidden' : 'opacity-100'} absolute top-0 w-full h-full bg-[#fff] z-[100] flex flex-col items-center justify-center`}>
             <RiLoader2Fill className='animate-spin duration-[5000]' size={32} color='#000'/>
             <p className='text-black'>Loading...</p>
           </div>
