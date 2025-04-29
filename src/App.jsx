@@ -239,7 +239,7 @@ function App() {
       "12571": "lowerHold"
     };
 
-    let currentNode = nodeMap[info.instanceID];
+    let currentNode = window.nodeMap[info.instanceID];
 
     // Cerca risalendo la gerarchia il maxi-gruppo
     while (currentNode) {
