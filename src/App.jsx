@@ -83,6 +83,21 @@ function App() {
       let response = await fetch("https://globalsearoutes.net/wp-json/wp/v2/annotazioni?per_page=99").then(res => res.json());
       // console.log(response);
       setAnnotationsLinks(response);
+
+      Object.keys(window.BoatSections).map(section => {
+        let { annotations, floor} = window.BoatSections[section];
+
+          window.BoatSections[section].annotations = annotations.map((entry,index) => {
+            let id = index + 1;
+            let annotationLink = response.find(link => link.acf.ids === `${floor}.${id}`);
+    
+            entry.name_it = annotationLink ? annotationLink.acf.titolo_italiano : entry.name;
+            entry.name_en = annotationLink ? annotationLink.title.rendered : entry.name;
+    
+            return entry;
+          });
+      })
+       
     } catch (error) {
       // console.log(error);
     }
@@ -307,18 +322,22 @@ function App() {
       // return;
       removeAnnotations();
       window.apiClient.setCameraLookAt(cam.eye, cam.target);
-      window.annotations = [...annotations.map((entry, i) => ({ ...entry, id: i + 1 }))].map(entry => {
-        let annotationLink = annotationsLinks.find(link => link.acf.ids === `${floor}.${entry.id}`);
+      let annotationsList = [...annotations.map((entry, i) => ({ ...entry, id: i + 1 }))];
+      // .map(entry => {
+      //   let annotationLink = annotationsLinks.find(link => link.acf.ids === `${floor}.${entry.id}`);
 
-        entry.name_it = annotationLink ? annotationLink.acf.titolo_italiano : entry.name;
-        entry.name_en = annotationLink ? annotationLink.title.rendered : entry.name;
+      //   entry.name_it = annotationLink ? annotationLink.acf.titolo_italiano : entry.name;
+      //   entry.name_en = annotationLink ? annotationLink.title.rendered : entry.name;
 
-        return entry;
-      });
+      //   return entry;
+      // });
+      
+      console.log(annotationsList);
 
+      window.annotations = annotationsList;
       window.activeDeck = id;
 
-      setState(prevState => ({ ...prevState, annotations: [...window.annotations], annotationCount: 0 }));
+      setState(prevState => ({ ...prevState, annotations: [...annotationsList], annotationCount: 0 }));
       setSelectedAnnotation(null)
       setActiveDeck(id);
       setExpandedRows(null);
@@ -613,7 +632,7 @@ function App() {
           activeDeck &&
           <ListingTab 
             boatSections={boatSections}
-            annotations={state.annotations}
+            annotations={JSON.parse(JSON.stringify(state.annotations))}
             annotationCount={state.annotationCount}
             setState={setState}
             setExpandedRows={setExpandedRows}

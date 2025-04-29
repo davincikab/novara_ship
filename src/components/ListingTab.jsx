@@ -135,7 +135,7 @@ export default function ListingTab({
 
                       <div className="annotation-list h-[calc(100%_-_100px)] overflow-auto p-2">
                         {
-                          annotations
+                          [...annotations]
                             .map((annotation, index) => {
                               return (
                                 <div 
@@ -148,7 +148,7 @@ export default function ListingTab({
                                       <RiArrowDownSLine />
                                     </div> */}
 
-                                    <div className='font-bold text-[15px]'>{annotation[`name_${language}`]}</div>
+                                    <div className='font-bold text-[15px]'>{annotation[`name_${language}`] || annotation.name}</div>
                                   </div>
 
                                   <div className='flex flex-1 text-gray justify-between items-center text-[12px] mt-2'>
@@ -203,6 +203,7 @@ export default function ListingTab({
     }
 
     console.log(language);
+    console.log(annotations);
 
     if(device == "Mobile") {
         // ${!isOpen ? 'top-[100vh]' : 'top-[100px]'}
