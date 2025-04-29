@@ -307,10 +307,18 @@ function App() {
       // return;
       removeAnnotations();
       window.apiClient.setCameraLookAt(cam.eye, cam.target);
-      window.annotations = [...annotations.map((entry, i) => ({ ...entry, id: i + 1 }))];
+      window.annotations = [...annotations.map((entry, i) => ({ ...entry, id: i + 1 }))].map(entry => {
+        let annotationLink = annotationsLinks.find(link => link.acf.ids === `${floor}.${entry.id}`);
+
+        entry.name_it = annotationLink ? annotationLink.acf.titolo_italiano : entry.name;
+        entry.name_en = annotationLink ? annotationLink.title.rendered : entry.name;
+
+        return entry;
+      });
+
       window.activeDeck = id;
 
-      setState(prevState => ({ ...prevState, annotations: [...annotations.map((entry, i) => ({ ...entry, id: i + 1 }))], annotationCount: 0 }));
+      setState(prevState => ({ ...prevState, annotations: [...window.annotations], annotationCount: 0 }));
       setSelectedAnnotation(null)
       setActiveDeck(id);
       setExpandedRows(null);

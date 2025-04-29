@@ -148,7 +148,7 @@ export default function ListingTab({
                                       <RiArrowDownSLine />
                                     </div> */}
 
-                                    <div className='font-bold text-[15px]'>{annotation.name}</div>
+                                    <div className='font-bold text-[15px]'>{annotation[`name_${language}`]}</div>
                                   </div>
 
                                   <div className='flex flex-1 text-gray justify-between items-center text-[12px] mt-2'>
@@ -201,6 +201,8 @@ export default function ListingTab({
             </div>
         );
     }
+
+    console.log(language);
 
     if(device == "Mobile") {
         // ${!isOpen ? 'top-[100vh]' : 'top-[100px]'}
