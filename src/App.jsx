@@ -37,6 +37,8 @@ const boatSections = {
   'lowerHold': { floor: 5, cam: camLH, part: part5, annotations: gaLH, name: "Lower Hold" }
 };
 
+const nodeMap = {};
+
 window.BoatSections = boatSections;
 
 // 
