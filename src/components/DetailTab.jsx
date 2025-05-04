@@ -116,7 +116,8 @@ const RowExpansionTemplate = ({ data, annotationsLinks, language, floor }) => {
             ref={iframeRef}
             src={!item ? `https://globalsearoutes.net/annotazioni/annotation-not-available/?${language}` : url}
             onLoad={onLoad}
-            className="min-h-[100%] h-full w-full !border-0 z-0"
+            className="min-h-[100%] h-full w-full !border-0 z-0" 
+            allowFullScreen
           ></iframe>
         </div>
       )

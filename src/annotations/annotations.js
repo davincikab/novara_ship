@@ -2,8 +2,8 @@ const gaSails = [
     {
       "name": "Flying jib",
       "content": {
-        "raw": "Controfiocco",
-        "rendered": "Controfiocco"
+        "raw": "",
+        "rendered": ""
       },
       "position": [44.84608772533658, 39.55118259855085, 28.395476785919694],
       "eye": [0.23608844824409658, 66.27761762818847, 36.476180346925425],

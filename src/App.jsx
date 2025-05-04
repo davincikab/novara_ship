@@ -26,7 +26,7 @@ const part2 = 2619; //  piano_2 1172
 const part3 = 8131; //  piano_3 7551
 const part4 = 11817; //  piano_4 2053
 const part5 = 12571; // piano_scafo_inferiore  
-
+let lastAnnotationClickTime = 0;
 
 const boatSections = {
   'sails': { floor: 0, cam: camSA, part: part0, annotations: gaSails, name: "Sails" },
@@ -191,16 +191,16 @@ function App() {
         });
 
         window.apiClient.addEventListener("annotationSelect", function (info) {
-          // console.log('annotationSelect', info);
+           console.log('annotationSelect', info);
           if (info === -1) {
             return;
           }
+          lastAnnotationClickTime = Date.now();
 
           focusToAnnotation(info);
         });
 
         window.apiClient.addEventListener("annotationFocus", () => {
-
         });
 
         window.apiClient.addEventListener("annotationBlur", function () {
@@ -208,8 +208,15 @@ function App() {
         });
 
         window.apiClient.addEventListener("click", (info) => {
-          // console.log(info);
           if (!info || !info.instanceID) return;
+
+          // Ignora il click se è su un'annotazione appena selezionata
+          if (Date.now() - lastAnnotationClickTime < 500) {
+            console.log("Ignoro click perché è legato a una annotazione");
+            return;
+          }
+
+          // Il primo colpito dal raycast è info.instanceID, ignorare tutto il resto
           handleSectionClick(info);
         });
 
@@ -246,7 +253,7 @@ function App() {
       const id = currentNode.instanceID.toString();
       if (gruppiPrincipali[id]) {
         // console.log(`You clicked on: ${gruppiPrincipali[id]}`);
-        //console.log(`Gruppo trovato: ${gruppiPrincipali[id]}`);
+        console.log(`Gruppo trovato: ${gruppiPrincipali[id]}`);
 
         onClick({ target: { id: gruppiPrincipali[id] } });
         return;
@@ -457,18 +464,17 @@ function App() {
 
   const openModel = () => {
     window.apiClient.seekTo(0);
-    // Ottiene l'ID dell'animazione dal nome
-    window.apiClient.getAnimations((err) => {
+    window.apiClient.getAnimations((err) => {     // Ottiene l'ID dell'animazione dal nome
       if (err) {
         console.error(err);
         return;
       }
 
-      // Imposta l'animazione in loop
       window.apiClient.setSpeed(1);
       window.apiClient.play();
     });
   }
+
 
   const closeModel = () => {
     window.apiClient.seekTo(4.13);
@@ -486,6 +492,8 @@ function App() {
 
     resetCam();
   }
+
+
 
   const gotoAnnotation = (annotation) => {
     window.apiClient.gotoAnnotation(annotation.id - 1, function (err) {});
@@ -517,9 +525,15 @@ function App() {
 
   const modelUid = "03264464875242bda7e9c07da6921df8";
 
+  // Espone openModel e closeModel globalmente dopo il montaggio del componente
+  useEffect(() => {
+    window.openModel = openModel;
+    window.closeModel = closeModel;
+  }, []);
+
 //  console.log(navRef.current);
 // console.log(expandedRows, isDetailTabOpen);
-  return (
+  return ( 
     <div className='w-full h-full !bg-[#e7e7e7] main-section relative'>
       { isNavActive && <div className="navbar mb items-center flex absolute gap-3 z-[10] p-4 w-full h-[60px] top-3">
           <div 

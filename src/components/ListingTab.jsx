@@ -1,7 +1,7 @@
 import React, { use, useEffect } from 'react'
 import useDeviceDetection from '../hooks/useDeviceDetection';
 
-import { RiLock2Line, RiDraggable, RiArrowLeftDoubleLine, RiArrowLeftSLine, RiGalleryLine, RiCloseLine, RiExpandDiagonal2Line, RiExpandDiagonalLine, RiHome2Line, RiHome3Line, RiHome4Line, RiSailboatFill, RiSailboatLine, RiSearch2Line, RiTriangleLine, RiLoader2Fill, RiArrowUpDoubleLine, RiArrowDownLine, RiArrowDownSLine, RiFileVideoFill, RiFolderMusicFill, RiMore2Fill, RiMoreFill, RiInformationLine, RiArrowRightSLine } from '@remixicon/react';
+import { RiLock2Line, RiDraggable, RiArrowLeftDoubleLine, RiArrowLeftSLine, RiGalleryLine, RiCloseLine, RiExpandDiagonal2Line, RiExpandDiagonalLine, RiHome2Line, RiHome3Line, RiHome4Line, RiSailboatFill, RiSailboatLine, RiSearch2Line, RiTriangleLine, RiLoader2Fill, RiArrowUpDoubleLine, RiArrowDownLine, RiArrowDownSLine, RiFileVideoFill, RiFolderMusicFill, RiMore2Fill, RiMoreFill, RiInformationLine, RiArrowRightSLine,RiFileTextLine  } from '@remixicon/react';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import Draggable from 'react-draggable';
 import { ResizableBox } from 'react-resizable';
@@ -12,6 +12,7 @@ import { ButtonGroup } from 'primereact/buttongroup';
 import DetailTab from './DetailTab';
 import { useTranslation } from '../LocalizationProvider';
 import { useSwipeable } from 'react-swipeable';
+import './fancy-button.css';
 
 export default function ListingTab({ 
     annotations, setSelectedAnnotation, setExpandedRows, expandedRows, language, openDetailTab,
@@ -21,6 +22,7 @@ export default function ListingTab({
     const draggableRef = React.useRef(null);
     const [isDetailTabOpen, setIsDetailTabOpen] = React.useState(false);
     const t = useTranslation();
+    const [clicked, setClicked] = React.useState("");
 
     const handlers = useSwipeable({
       preventDefaultTouchmoveEvent: true,
@@ -67,6 +69,18 @@ export default function ListingTab({
       setExpandedRows({ [index]: true });
       window.apiClient.gotoAnnotation(index - 1);
     }
+
+    const handleClick = (dir) => {
+      setClicked(dir);
+      setTimeout(() => setClicked(""), 400); // reset ripple
+
+      const index = parseInt(Object.keys(expandedRows)[0]);
+      if (dir === "prev") {
+        gotoAnnotation(index - 1);
+      } else {
+        gotoAnnotation(index + 1);
+      }
+    };
 
     const renderHeader = () => {
         return (
@@ -123,11 +137,11 @@ export default function ListingTab({
 
 
         return (
-            <div className={`!bg-[#fff] listing-section overflow-hidden w-full mt-[0px] rounded-[16px] h-full`}   >
+            <div className={`listing-section overflow-hidden w-full mt-[0px] rounded-[16px] h-full border-2 border-[rgb(173,154,109)]`}   >
 
                   <div className="list-group w-full overflow-hidden relative h-full">
 
-                    <div className="relative bg-white h-full">
+                    <div className="relative bg-gray-100/80 backdrop-blur-2xl h-full">
                       <div className="h-16">
                         {renderHeader()}
                       </div>
@@ -139,24 +153,27 @@ export default function ListingTab({
                             .map((annotation, index) => {
                               return (
                                 <div 
-                                  className={`full list-item bg-white rounded-sm shadow-sm cursor-pointer hover:bg-gray-200 p-2 my-2 border-[0px] border-[#d9d9d9] text-[#403F43] flex flex-col`}
+                                  className={`full bg-white rounded-sm shadow-sm cursor-pointer border-[2px] border-transparent hover:border-black transition-all duration-200 p-4 my-2 text-[#403F43] flex flex-col gap-2`}
                                   onClick={(e) => { e.stopPropagation(); setExpandedRows({ [parseInt(annotation.id)]: true }); setIsDetailTabOpen(true); setSelectedAnnotation(annotation); }}
                                   key={annotation.id}
                                 >
-                                  <div className="d-flex">
-                                    {/* <div className='flex items-center justify-between mx-2'>
-                                      <RiArrowDownSLine />
-                                    </div> */}
+                                  <div className='flex flex-row items-center gap-4 justify-start'>
+                                      <div className='w-min-10'><div className="group relative w-6 h-6 rounded-full border border-white/90 backdrop-blur-md bg-black/40 flex items-center justify-center text-white text-xs font-semibold hover:scale-110 transition-transform duration-200 cursor-pointer">
+                                        {index + 1}
+                                        </div>
+                                        </div>
+                                      <div className='flex flex-col items-start'>
+                                      <div className='font-bold w-fit text-[15px]'>{annotation[`name_${language}`] || annotation.name}</div>
 
-                                    <div className='font-bold text-[15px]'>{annotation[`name_${language}`] || annotation.name}</div>
-                                  </div>
-
-                                  <div className='flex flex-1 text-gray justify-between items-center text-[12px] mt-2'>
-                                    { hasVideo(annotation.id) ? <div className='text-[12px] items-center flex'> <RiFileVideoFill className="mr-1" size={20} color={"#999"} /> Video</div> : ""}   
-                                    { hasAudio(annotation.id) ? <div className='text-[12px] items-center flex'><RiFolderMusicFill className="mr-1" size={20}  color={"#999"} /> Audio</div> : ""}    
-                                    { hasInfo(annotation.id) ? <div className='text-[12px] items-center flex'><RiInformationLine className="mr-1" size={20}  color={"#999"} /> Info </div> : ""}                              
-                                  </div>
+                                      <div className='flex flex-1 text-gray gap-1 items-center text-[12px] mt-2'>
+                                        { hasVideo(annotation.id) ? <div className='text-[12px] items-center flex'> <RiFileVideoFill className="mr-1" size={20} color={"#999"} /> {/* Video */}</div> : ""}   
+                                        { hasAudio(annotation.id) ? <div className='text-[12px] items-center flex'><RiFolderMusicFill className="mr-1" size={20}  color={"#999"} /> {/* Audio */}</div> : ""}    
+                                        { hasInfo(annotation.id) ? <div className='text-[12px] items-center flex'><RiFileTextLine className="mr-1" size={20}  color={"#999"} /> {/* Info */} </div> : ""}                              
+                                      </div>
+                                      </div>
                                 </div>
+                                </div>
+
                               )
                             })
                         }
@@ -179,19 +196,22 @@ export default function ListingTab({
                             /> : ""
                         }
 
-                        {(isDetailTabOpen && expandedRows) && <div className="absolute bottom-2 z-4 flex justify-between items-center w-full h-[50px] bg-white border-t-[1px] border-[#d9d9d9] px-2">
-                          <div className="flex-1">
-                            <Button className='nav-btn btn-sm text-black text-[12px]' onClick={() => gotoAnnotation(parseInt(Object.keys(expandedRows)[0]) - 1)} >
-                              <RiArrowLeftSLine size={18}/>
-                              Prev
-                            </Button>
-                          </div>
+                        {(isDetailTabOpen && expandedRows) && <div className="absolute bottom-2 z-4 flex gap-2 justify-between items-center w-full h-[50px] bg-white border-t-[1px] border-[#d9d9d9] px-2">
+                          <div className="flex-1 p-2 items-center text-[12px] text-[#888] justify-center">{parseInt(Object.keys(expandedRows)[0])} /  {annotations.length}</div>
 
-                          <div className="flex-1 flex items-center text-[12px] text-[#888]">{parseInt(Object.keys(expandedRows)[0])} /  {annotations.length}</div>
+                         <Button 
+                            className={`fancy-button nav-btn btn-sm text-white text-[12px] bg-black ${clicked === "prev" ? "clicked" : ""}`} 
+                            onClick={() => handleClick("prev")}
+                          >
+                            <RiArrowLeftSLine size={16}/> Prev
+                          </Button>
 
-                          <Button className='nav-btn btn-sm text-black text-[12px]' onClick={() => gotoAnnotation(parseInt(Object.keys(expandedRows)[0]) + 1)} >
-                            Next
-                            <RiArrowRightSLine size={18}/>
+
+                          <Button 
+                            className={`fancy-button nav-btn btn-sm text-black text-[12px] ${clicked === "next" ? "clicked" : ""}`} 
+                            onClick={() => handleClick("next")}
+                          >
+                            Next <RiArrowRightSLine size={16}/>
                           </Button>
                         </div>}
                     </div>
@@ -203,7 +223,7 @@ export default function ListingTab({
     }
 
     console.log(language);
-    console.log(annotations);
+    //console.log(annotations);
 
     if(device == "Mobile") {
         // ${!isOpen ? 'top-[100vh]' : 'top-[100px]'}
@@ -248,3 +268,4 @@ export default function ListingTab({
           </Draggable>
     )
 }
+
