@@ -2,8 +2,8 @@ const gaSails = [
     {
       "name": "Flying jib",
       "content": {
-        "raw": "",
-        "rendered": ""
+        "raw": "Fiocco volante",
+        "rendered": "Fiocco volante"
       },
       "position": [44.84608772533658, 39.55118259855085, 28.395476785919694],
       "eye": [0.23608844824409658, 66.27761762818847, 36.476180346925425],
@@ -12,8 +12,8 @@ const gaSails = [
     {
       "name": "Outer jib",
       "content": {
-        "raw": "Fiocco",
-        "rendered": "Fiocco"
+        "raw": "Fiocco esterno",
+        "rendered": "Fiocco esterno"
       },
       "position": [44.946969954544784, 33.36338499431392, 27.338533058810608],
       "eye": [-2.2170244634167346, 63.63558924233111, 35.72108606475215],
@@ -42,8 +42,8 @@ const gaSails = [
     {
       "name": "Fore staysail",
       "content": {
-        "raw": "Velaccino",
-        "rendered": "Velaccino"
+        "raw": "Trinchetta",
+        "rendered": "Trinchetta"
       },
       "position": [43.993768004512994, 21.30559183731902, 47.16520559465633],
       "eye": [8.188348610335957, 57.365923496565046, 49.00434802799087],
@@ -72,8 +72,8 @@ const gaSails = [
     {
       "name": "Main royal staysail",
       "content": {
-        "raw": "Strallo di velaccio",
-        "rendered": "Strallo di velaccio"
+        "raw": "Fiocco di velaccio",
+        "rendered": "Fiocco di velaccio"
       },
       "position": [44.7729941881251, 12.378961323097197, 42.29855595507172],
       "eye": [-8.810716493841554, 13.640229696663779, 43.84232822294239],
@@ -82,8 +82,8 @@ const gaSails = [
     {
       "name": "Main topgallant staysail",
       "content": {
-        "raw": "Strallo di gabbia",
-        "rendered": "Strallo di gabbia"
+        "raw": "Controvelaccio di parrocchetto",
+        "rendered": "Controvelaccio di parrocchetto"
       },
       "position": [44.86952058677492, 11.593527178143509, 30.85949458018198],
       "eye": [-8.25526274875832, 10.587194358164716, 36.94617085756745],
@@ -92,8 +92,8 @@ const gaSails = [
     {
       "name": "Main moonsail",
       "content": {
-        "raw": "Velaccio",
-        "rendered": "Velaccio"
+        "raw": "Controvelaccio",
+        "rendered": "Controvelaccio"
       },
       "position": [43.71799537115366, 0.6183841928424254, 54.85761298923428],
       "eye": [0.8238027511918204, 29.362911220614297, 57.361719670728405],
@@ -102,8 +102,8 @@ const gaSails = [
     {
       "name": "Main skysail",
       "content": {
-        "raw": "Controvelaccio",
-        "rendered": "Controvelaccio"
+        "raw": "Velaccio di maestra",
+        "rendered": "Velaccio di maestra"
       },
       "position": [43.72903350607827, 1.4514466895591704, 48.934198996295336],
       "eye": [3.8901675313816675, 24.77471218165624, 51.249590946827894],
@@ -112,8 +112,8 @@ const gaSails = [
     {
       "name": "Main topgallant sail",
       "content": {
-        "raw": "Gabbia",
-        "rendered": "Gabbia"
+        "raw": "Gran velaccio",
+        "rendered": "Gran velaccio"
       },
       "position": [43.26581998390709, 3.523822728843391, 37.404905891573236],
       "eye": [-5.583673917258842, 33.70295597160131, 37.748281898332344],
@@ -122,8 +122,8 @@ const gaSails = [
     {
       "name": "Mainsail",
       "content": {
-        "raw": "Maestra",
-        "rendered": "Maestra"
+        "raw": "Randa di maestra",
+        "rendered": "Randa di maestra"
       },
       "position": [42.98694980516489, 2.6869847166204783, 23.601914707693677],
       "eye": [-3.5204439877387053, 28.839068878858054, 24.005419069427848],
@@ -132,8 +132,8 @@ const gaSails = [
     {
       "name": "Mizzen topgallant staysail",
       "content": {
-        "raw": "Strallo di belvedere",
-        "rendered": "Strallo di belvedere"
+        "raw": "Strallo di mezzana",
+        "rendered": "Strallo di mezzana"
       },
       "position": [44.73750212242655, -7.451033522402838, 30.086967845407496],
       "eye": [-7.0525075672795765, 3.5173314083370215, 34.75509339655725],
@@ -142,8 +142,8 @@ const gaSails = [
     {
       "name": "Mizzen moonsail",
       "content": {
-        "raw": "Controbelvedere",
-        "rendered": "Controbelvedere"
+        "raw": "Contro belvedere",
+        "rendered": "Contro belvedere"
       },
       "position": [44.419865327812104, -14.816470904122577, 45.43599260222298],
       "eye": [10.465419380033108, 5.318949278292489, 47.60003797200605],
@@ -162,8 +162,8 @@ const gaSails = [
     {
       "name": "Mizzen topgallant sail",
       "content": {
-        "raw": "Contromezzana",
-        "rendered": "Contromezzana"
+        "raw": "Vela maestra di mezzana",
+        "rendered": "Vela maestra di mezzana"
       },
       "position": [44.24876660035335, -12.888522526663861, 32.90208727257472],
       "eye": [3.0311636163001268, 6.726022534184612, 34.11635785326319],
@@ -245,10 +245,10 @@ const gaSails = [
       "noteIta": "./audio/binnacles.mp3"
     },
     {
-      "name": "6+6 18-pounders cast in the Gusswerk foundries near Mariazell, Styria",
+      "name": "6+6 18-pounders",
       "content": {
-        "raw": "6+6 cannoni da 18 libbre fusi nelle fonderie Gusswerk vicino a Mariazell, Stiria",
-        "rendered": "6+6 cannoni da 18 libbre fusi nelle fonderie Gusswerk vicino a Mariazell, Stiria"
+        "raw": "6+6 cannoni da 18 libbre",
+        "rendered": "6+6 cannoni da 18 libbre"
       },
       "position": [
         33.20666475000586,
@@ -289,10 +289,10 @@ const gaSails = [
       ]
     },
     {
-      "name": "Crew hammocks rolled up for air exposure",
+      "name": "Crew hammocks",
       "content": {
-        "raw": "Amache dell’equipaggio arrotolate per l’esposizione all’aria",
-        "rendered": "Amache dell’equipaggio arrotolate per l’esposizione all’aria"
+        "raw": "Amache dei marinai",
+        "rendered": "Amache dei marinai"
       },
       "position": [
         24.38273094359775,
@@ -311,10 +311,10 @@ const gaSails = [
       ]
     },
     {
-      "name": "Gondola - Typical Venetian gondola, used as an auxiliary boat (the Novara was built at the Arsenal of Austrian Venice)",
+      "name": "Gondola",
       "content": {
-        "raw": "Gondola veneziana usata come imbarcazione di servizio e rappresentanza (la Novara fu costruita all&#39;Arsenale di Venezia austriaca)",
-        "rendered": "Gondola veneziana usata come imbarcazione di servizio e rappresentanza (la Novara fu costruita all&#39;Arsenale di Venezia austriaca)"
+        "raw": "Gondola",
+        "rendered": "Gondola"
       },
       "position": [
         37.78954688441905,
@@ -333,10 +333,10 @@ const gaSails = [
       ]
     },
     {
-      "name": "Reserve timber for masts and yards",
+      "name": "Reserve timber",
       "content": {
-        "raw": "Legname di riserva per alberatura e pennoni",
-        "rendered": "Legname di riserva per alberatura e pennoni"
+        "raw": "Legname di riserva",
+        "rendered": "Legname di riserva"
       },
       "position": [
         32.45743098149114,
@@ -431,10 +431,10 @@ const gaSails = [
       "noteIta": "./audio/maury.mp3"
     },
     {
-      "name": "Officers’ cabins",
+      "name": "Officers’ cabins (upper deck)",
       "content": {
-        "raw": "Cabine degli ufficiali",
-        "rendered": "<p>Cabine degli ufficiali</p>"
+        "raw": "Cabine degli ufficiali (ponte superiore)",
+        "rendered": "<p>Cabine degli ufficiali (ponte superiore)</p>"
       },
       "position": [18.500802424062464, -11.584647725934165, 9.411211174776822],
       "eye": [16.89125747434353, -11.077126139692657, 20.240434913441476],
@@ -649,6 +649,16 @@ const gaSails = [
       "position": [-18.82739098371712, 5.962678395077427, 3.9244378045477584],
       "eye": [-33.80864065796355, 5.616393397072782, 25.422944164694364],
       "target": [-18.82739098371712, 5.962678395077427, 3.9244378045477584]
+    },
+    { //NUOVO PIN AGGIUNTO
+      "name": "Storage of natural specimens",
+      "content": {
+        "raw": "Conservazione esemplari naturalistici",
+        "rendered": "<p>Conservazione esemplari naturalistici</p>"
+      },
+      "position": [-11.82739098371712, 5.962678395077427, 3.9244378045477584],
+      "eye": [-33.80864065796355, 5.616393397072782, 25.422944164694364],
+      "target": [-11.82739098371712, 5.962678395077427, 3.9244378045477584]
     },
     {
       "name": "Linen and deck-washing materials",
