@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css';
 import SketchfabViewer from './SketchfabViewer';
 import { RiArrowLeftDoubleLine, RiArrowLeftSLine, RiCloseLine, RiExpandDiagonal2Line, RiExpandDiagonalLine } from '@remixicon/react';
+import { HiMenu } from 'react-icons/hi';
 import { FilterMatchMode } from 'primereact/api';
 
 import Draggable from 'react-draggable';
@@ -463,12 +464,14 @@ function App() {
   }
 
   const openModel = () => {
-    window.apiClient.seekTo(0);
+   // window.apiClient.seekTo(0);
+    console.log("Open Model");
+    
     window.apiClient.getAnimations((err) => {     // Ottiene l'ID dell'animazione dal nome
-      if (err) {
+     if (err) {
         console.error(err);
         return;
-      }
+      } 
 
       window.apiClient.setSpeed(1);
       window.apiClient.play();
@@ -477,7 +480,7 @@ function App() {
 
 
   const closeModel = () => {
-    window.apiClient.seekTo(4.13);
+   // window.apiClient.seekTo(4.13);
     window.apiClient.getAnimations((err) => {
       if (err) {
         console.error(err);
@@ -573,7 +576,7 @@ function App() {
       {// BUTTON PANEL ANNOTATION 
           (activeDeck && !state.isTableOpen) ?
             <Button onClick={toggleTable} className='!absolute z-[10] bottom-[20px] right-4  flex items-center justify-center !bg-[#CAC2B0] !border-[4px] !border-[#AD9A6D] h-[50px] w-[50px] !p-1 !rounded-full' rounded>
-          <RiArrowLeftDoubleLine color='#403F43' className='!font-bold' size={28} />
+          <HiMenu color='#403F43' size={28} />
         </Button> : ""}
 
       <div className="main w-full absolute !bg-[transparent] overflow-hidden z-0" style={{ top: "0px", left: "0px", bottom: "0px", right: "0px", border: "10px solid #e7e7e7" }}>
@@ -710,43 +713,22 @@ function App() {
           </div>
 
         </div>
-
-        <div className="absolute bottom-0 left-0 flex items-end w-auto !py-4 hidden">
-          <div className="bg-[#e8e8e8] shadow-md h-[fit-content] w-[400px] !mr-4 p-[20px] rounded-md">
-            <div className="header flex justify-between w-full text-black mb-2">
-              <div className="title-section">
-                <h5 className="font-bold text-[22px] text-[#403F43]">Model Controls</h5>
-                <div className='text-[#5D6C71] text-[16px] my-1'>Manage the 3D Model View</div>
-              </div>
-
-              <Button
-                onClick={() => setState({ ...state, isModelControlExpanded: !state.isModelControlExpanded })}
-                className='!bg-[#f1f1f1] border-[1px] !border-[#CDCDDF] h-[40px] w-[40px] !p-1 flex items-center justify-center rounded-full'
-              >
-                <RiExpandDiagonalLine size={19} />
-                <RiExpandDiagonal2Line size={19} className='absolute' />
-              </Button>
-            </div>
-
-            {
-              state.isModelControlExpanded ?
-                <>
-                  <hr className='!bg-[#878787] border-[#878787] ' />
-                  <div className="body py-2 flex flex-col justify-between w-full h-auto">
-                    <div className="slider-section my-2 mb-3 w-[95%] mx-auto">
-                      <Slider value={state.parts} onChange={onLevelsChange} max={5} min={0} step={0.1} className='focus:!bg-[#AD9A6D] ' />
+        {/* APRI CHIUDI NAVE */} 
+         { isNavActive && (
+          <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-3 w-auto !py-4 bg-white/30 backdrop-blur-md shadow-md h-[fit-content] mb-2 p-[10px] rounded-md border border-white/40">
+                    <h3 className="text-[#403F43]">{t('novara_views')}</h3>
+                    <div className="flex justify-between gap-2">
+                     <Button
+                        label='Close'
+                        onClick={() => { onLevelsChange({ value: 0, animate: true }) }}
+                        className='border-2 !border-[#bd2949] !px-[16px] !py-[5px] !bg-[inherit] !rounded-[100px] !text-[16px] focus:outline-2 focus:outline-[#AD9A6D] focus:outline-offset-2'
+                        />
+                      <Button 
+                        label='Open' 
+                        onClick={() => { onLevelsChange({ value: 5, animate: true }) }} 
+                        className='!px-[16px] !py-[5px] !border-[#446a44] !bg-[inherit] !rounded-[100px] !text-[16px]' />
                     </div>
-
-                    <div className="flex justify-between mt-3">
-                      <Button label='Close' onClick={() => { onLevelsChange({ value: 0, animate: true }) }} className='!px-[12px] !py-[5px] !border-[#CDCDDF] !bg-[inherit] !rounded-[100px] !text-[10px]' />
-                      <Button label='Open' onClick={() => { onLevelsChange({ value: 5, animate: true }) }} className='!px-[12px] !py-[5px] !border-[#CDCDDF] !bg-[inherit] !rounded-[100px] !text-[10px]' />
-                    </div>
-
-                  </div></>
-                : ""
-            }
-          </div>
-
+          </div> ) }
 
           <div className="bg-[#e8e8e8] shadow-md w-[400px] !p-[20px] rounded-md h-[fit-content] hidden">
 
@@ -790,7 +772,6 @@ function App() {
         </div>
 
       </div>
-    </div>
   )
 }
 
